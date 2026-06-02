@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資ダッシュボード 作成マニュアル</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --subtext: #64748b;
+      --border: #e2e8f0;
+      --code-bg: #f1f5f9;
+      --green: #16a34a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* Header */
+    .page-header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 32px 40px;
+    }
+    .page-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .page-header .meta { font-size: 12px; opacity: 0.75; }
+
+    /* Layout */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+    /* Section */
+    .section {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-badge {
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      white-space: nowrap;
+    }
+    .section-title { font-size: 16px; font-weight: 700; }
+
+    /* Overview card */
+    .overview {
+      background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .overview p { color: #1e40af; line-height: 1.9; }
+    .overview strong { color: #1e3a8a; }
+
+    /* Typography */
+    h2 { font-size: 15px; font-weight: 700; margin: 18px 0 10px; color: var(--text); }
+    h3 { font-size: 13px; font-weight: 700; margin: 14px 0 8px; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.04em; }
+    p { margin-bottom: 10px; color: var(--text); }
+    ul, ol { padding-left: 20px; margin-bottom: 10px; }
+    li { margin-bottom: 4px; }
+
+    /* Code */
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+      font-size: 12px;
+      color: #be185d;
+    }
+    pre {
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      margin: 10px 0 14px;
+    }
+    pre code {
+      background: none;
+      border: none;
+      color: #e2e8f0;
+      font-size: 12px;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .comment { color: #64748b; }
+    .string  { color: #86efac; }
+    .key     { color: #93c5fd; }
+    .num     { color: #fbbf24; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 13px; }
+    thead tr { background: #f8fafc; }
+    th {
+      padding: 10px 14px; text-align: left;
+      font-weight: 700; color: var(--subtext);
+      border-bottom: 2px solid var(--border);
+      font-size: 12px;
+    }
+    td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+
+    /* Callout */
+    .callout {
+      border-left: 4px solid var(--primary-light);
+      background: #eff6ff;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 10px 0;
+      font-size: 13px;
+      color: #1e40af;
+    }
+    .callout.warn {
+      border-color: #f59e0b;
+      background: #fefce8;
+      color: #92400e;
+    }
+    .callout.success {
+      border-color: var(--green);
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    /* Method cards */
+    .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+    @media(max-width:680px){ .method-grid { grid-template-columns: 1fr; } }
+    .method-card {
+      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid;
+    }
+    .method-card.a { border-color: #86efac; background: #f0fdf4; }
+    .method-card.b { border-color: #bfdbfe; background: #eff6ff; }
+    .method-card.c { border-color: #ddd6fe; background: #f5f3ff; }
+    .method-label {
+      font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 6px;
+    }
+    .method-card.a .method-label { color: #166534; }
+    .method-card.b .method-label { color: #1e40af; }
+    .method-card.c .method-label { color: #5b21b6; }
+    .method-card p { font-size: 12px; margin: 0; color: var(--text); }
+    .rec-badge {
+      display: inline-block;
+      background: #16a34a; color: white;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 7px; border-radius: 9999px;
+      margin-left: 6px; vertical-align: middle;
+    }
+
+    /* File tree */
+    .file-tree {
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 12px;
+      color: #e2e8f0;
+      line-height: 2;
+    }
+    .file-tree .folder { color: #93c5fd; }
+    .file-tree .file   { color: #86efac; }
+    .file-tree .note   { color: #64748b; font-size: 11px; }
+
+    /* Trouble table */
+    .trouble-table td:first-child { color: #dc2626; font-weight: 600; }
+    .trouble-table td:last-child  { color: #166534; }
+
+    /* TOC */
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .toc a {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .toc a:hover { background: #eff6ff; border-color: var(--primary-light); }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>📘 投資ダッシュボード 作成マニュアル</h1>
+  <div class="meta">作成日: 2026年6月1日　/　対象ファイル: 投資ダッシュボード.html</div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <a href="#overview">概要</a>
+    <a href="#step1">Step 1: MCP接続</a>
+    <a href="#step2">Step 2: データ構造</a>
+    <a href="#step3">Step 3: 配当スクレイピング</a>
+    <a href="#step4">Step 4: 分類・集計</a>
+    <a href="#step5">Step 5: 実装</a>
+    <a href="#step5">Step 6: 更新方法</a>
+    <a href="#trouble">トラブル対応</a>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview" id="overview">
+    <p>
+      <strong>Google Drive</strong> に保存している楽天証券データ（スプレッドシート「日本株管理」）と<br>
+      <strong>Yahoo Finance Japan のスクレイピング</strong>（配当データ）を組み合わせて、<br>
+      MoneyForward 風の投資ポートフォリオダッシュボードを <strong>HTML 単一ファイル</strong> として作成。<br>
+      ブラウザで開くだけで動作し、サーバーやアプリのインストールは不要。
+    </p>
+  </div>
+
+  <!-- Tools -->
+  <div class="section">
+    <div class="section-header">
+      <span class="step-badge">使用ツール</span>
+      <span class="section-title">技術スタック</span>
+    </div>
+    <table>
+      <thead><tr><th>ツール</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>Claude Code</code>（VSCode拡張）</td><td>実装・ファイル作成</td></tr>
+        <tr><td><code>Google Drive MCP</code></td><td>スプレッドシートのデータ読み取り</td></tr>
+        <tr><td><code>Yahoo Finance Japan</code></td><td>配当データ（今期予想・前年実績）のスクレイピング元</td></tr>
+        <tr><td><code>Python 3</code>（requests + BeautifulSoup）</td><td>配当スクレイピングスクリプト（fetch_dividends.py）</td></tr>
+        <tr><td><code>Chart.js v4.4.0</code></td><td>グラフ描画（CDN読み込み、インストール不要）</td></tr>
+        <tr><td><code>HTML / CSS / JavaScript</code></td><td>ダッシュボード本体</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="section" id="step1">
+    <div class="section-header">
+      <span class="step-badge">Step 1</span>
+      <span class="section-title">Google Drive MCP の接続確認</span>
+    </div>
+    <p>claude.ai チャット側で Google Drive を連携済みの状態で、Claude Code（VSCode拡張）から MCP ツールが利用できることを確認した。</p>
+
+    <h2>利用した MCP ツール</h2>
+    <table>
+      <thead><tr><th>ツール名</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>list_recent_files</code></td><td>Drive 内のファイル一覧を取得</td></tr>
+        <tr><td><code>read_file_content</code></td><td>スプレッドシートの内容を読み取り</td></tr>
+      </tbody>
+    </table>
+
+    <h2>接続確認の手順</h2>
+    <ol>
+      <li><code>list_recent_files</code> で Drive 内のファイル一覧を取得</li>
+      <li>「日本株管理」スプレッドシートが一覧に表示されることを確認</li>
+      <li><code>read_file_content</code> にファイル ID を渡してデータ取得</li>
+    </ol>
+
+    <pre><code><span class="comment"># 対象スプレッドシート</span>
+<span class="key">ファイル名:</span> <span class="string">日本株管理</span>
+<span class="key">ファイルID:</span> <span class="string">1b3Hfdt4R51y7A55LECap7K-uTN_hjd8JMnKMF33_vAU</span>
+<span class="key">フォルダ:</span>  <span class="string">資産管理</span></code></pre>
+
+    <div class="callout">
+      <strong>ポイント:</strong> MCP ツールは「deferred tools」として登録されており、<code>ToolSearch</code> で <code>select:ツール名</code> を実行してスキーマを取得してから呼び出す必要がある。
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="section" id="step2">
+    <div class="section-header">
+      <span class="step-badge">Step 2</span>
+      <span class="section-title">スプレッドシートのデータ構造把握</span>
+    </div>
+    <p><code>read_file_content</code> で取得したデータには以下の4種類のテーブルが含まれていた。</p>
+
+    <h2>① master テーブル（銘柄マスタ）</h2>
+    <p>銘柄名・判定（国内高配当 / 国内グロース / 米国インデックスなど）・セクター</p>
+
+    <h2>② 個別株式テーブル（masterシート内）</h2>
+    <pre><code>コード | 銘柄名 | セクター | 保有数量 | 現在値 | 時価評価額 | 予想一株配当 | 年間配当金 | 配当利回り</code></pre>
+    <p>→ 22銘柄分（NISA成長投資枠）。<strong style="color:#dc2626">⚠️ 配当データは手動入力のため古い可能性が高い。Step 3 のスクレイピングに置き換え。</strong></p>
+
+    <h2>③ ALL Raw テーブル（楽天CSVエクスポートデータ）★主要</h2>
+    <pre><code>種別 | コード | 銘柄名 | 口座 | 保有数量 | 平均取得価額 | 現在値 | 時価評価額 | 評価損益 | 損益率 | 株式種別</code></pre>
+    <p>→ 国内株式・米国株式・投資信託 全ポジションの詳細データ。<strong>評価損益・損益率が含まれるため主にこちらを使用。</strong></p>
+
+    <h2>④ 株式種別サマリーテーブル</h2>
+    <table>
+      <thead><tr><th>株式種別</th><th>時価評価額</th><th>構成比</th><th>評価損益</th></tr></thead>
+      <tbody>
+        <tr><td>米国インデックス</td><td>¥4,777,496</td><td>48.9%</td><td>+¥1,660,352</td></tr>
+        <tr><td>世界インデックス</td><td>¥1,770,104</td><td>18.1%</td><td>+¥621,014</td></tr>
+        <tr><td>国内高配当</td><td>¥1,170,068</td><td>12.0%</td><td>+¥146,178</td></tr>
+        <tr><td>ゴールド</td><td>¥741,552</td><td>7.6%</td><td>+¥212,631</td></tr>
+        <tr><td>米国債券</td><td>¥406,151</td><td>4.2%</td><td>-¥20,483</td></tr>
+        <tr><td>米国高配当</td><td>¥382,760</td><td>3.9%</td><td>+¥68,209</td></tr>
+        <tr><td>国内グロース株</td><td>¥380,792</td><td>3.9%</td><td>-¥56,021</td></tr>
+        <tr><td>新興国株</td><td>¥146,228</td><td>1.5%</td><td>-¥3,772</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Step 3 (scraping) -->
+  <div class="section" id="step3">
+    <div class="section-header">
+      <span class="step-badge">Step 3</span>
+      <span class="section-title">配当データのスクレイピング（Yahoo Finance Japan）</span>
+    </div>
+    <p>masterシートの配当データは古い可能性が高いため、<strong>Yahoo Finance Japan から直接スクレイピング</strong>して正確な値を取得する。</p>
+
+    <h2>スクレイピングスクリプト</h2>
+    <pre><code><span class="comment"># 実行コマンド</span>
+<span class="key">cd</span> <span class="string">"/Users/daiyamazaki/Desktop/Investment management"</span>
+python3 fetch_dividends.py</code></pre>
+
+    <h2>取得するデータと取得元</h2>
+    <table>
+      <thead><tr><th>項目</th><th>取得元URL</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>今期予想配当（1株）</td><td><code>finance.yahoo.co.jp/quote/{code}.T</code></td><td>会社発表の予想配当</td></tr>
+        <tr><td>配当利回り</td><td>同上</td><td>会社予想ベース</td></tr>
+        <tr><td>前年度実績配当（1株）</td><td><code>finance.yahoo.co.jp/quote/{code}.T/dividend</code></td><td>配当履歴の直近実績（table[1]の先頭行）</td></tr>
+      </tbody>
+    </table>
+
+    <h2>パース方法</h2>
+    <pre><code><span class="comment"># 今期予想・利回り（株価ページ）</span>
+<span class="key">for</span> dl <span class="key">in</span> soup.find_all(<span class="string">'dl'</span>, class_=<span class="key">lambda</span> c: c <span class="key">and</span> <span class="string">'DataListItem_'</span> <span class="key">in</span> str(c)):
+    dt, dd = dl.find(<span class="string">'dt'</span>), dl.find(<span class="string">'dd'</span>)
+    <span class="key">if</span> <span class="string">'1株配当'</span> <span class="key">in</span> label:   → dd から数値を抽出
+    <span class="key">if</span> <span class="string">'配当利回り'</span> <span class="key">in</span> label: → dd から XX.XX% を抽出
+
+<span class="comment"># 前年度実績（配当履歴ページ）</span>
+tables = soup.find_all(<span class="string">'table'</span>)
+<span class="comment"># table[1] = 実績テーブル（最新年度が先頭）</span>
+rows = tables[<span class="num">1</span>].find_all(<span class="string">'tr'</span>)
+<span class="comment"># "YYYY年M月期" 行の年間配当（2列目）を取得</span></code></pre>
+
+    <h2>スクレイピング結果の例（2026年6月1日）</h2>
+    <table>
+      <thead><tr><th>銘柄</th><th>前年実績</th><th>今期予想</th><th>増配額</th><th>増配率</th></tr></thead>
+      <tbody>
+        <tr><td>アステラス製薬</td><td>78円</td><td>80円</td><td>+2円</td><td style="color:#16a34a">+2.6%</td></tr>
+        <tr><td>三井住友FG</td><td>157円</td><td>180円</td><td>+23円</td><td style="color:#16a34a">+14.6%</td></tr>
+        <tr><td>三菱UFJ</td><td>86円</td><td>96円</td><td>+10円</td><td style="color:#16a34a">+11.6%</td></tr>
+        <tr><td>任天堂</td><td>219円</td><td>162円</td><td>-57円</td><td style="color:#dc2626">-26.0%</td></tr>
+        <tr><td>日本郵船</td><td>230円</td><td>200円</td><td>-30円</td><td style="color:#dc2626">-13.0%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>注意:</strong> Yahoo Finance Japan のHTML構造が変更された場合、スクレイピングが失敗することがある。N/A が出た場合は <code>fetch_dividends.py</code> のパース部分を確認する。
+    </div>
+  </div>
+
+  <!-- Step 4 (classification) -->
+  <div class="section" id="step4">
+    <div class="section-header">
+      <span class="step-badge">Step 4</span>
+      <span class="section-title">データの分類・集計</span>
+    </div>
+    <p>スプレッドシートのデータをダッシュボード表示用に4カテゴリへ再分類した。</p>
+
+    <table>
+      <thead><tr><th>カテゴリ</th><th>対象銘柄</th><th>時価評価額</th><th>構成比</th><th>評価損益</th></tr></thead>
+      <tbody>
+        <tr><td>📈 投資信託・ETF</td><td>投資信託全種 + 国内ETF（1489/1545/1557）</td><td>¥7,409,191</td><td>75.6%</td><td style="color:#16a34a">+¥2,444,428（+49.2%）</td></tr>
+        <tr><td>🏢 個別株式</td><td>国内個別株22銘柄（ETF除く）</td><td>¥1,238,670</td><td>12.6%</td><td style="color:#dc2626">-¥2,906（-0.2%）</td></tr>
+        <tr><td>🥇 ゴールド</td><td>純金上場信託(1540) / IAU / GLDM</td><td>¥749,548</td><td>7.6%</td><td style="color:#16a34a">+¥220,627（+41.7%）</td></tr>
+        <tr><td>📄 債券</td><td>バンガード超長期米国債(EDV)</td><td>¥406,406</td><td>4.1%</td><td style="color:#dc2626">-¥20,228（-4.7%）</td></tr>
+        <tr style="font-weight:700; background:#f8fafc"><td>合計</td><td></td><td>¥9,803,815</td><td>100%</td><td style="color:#16a34a">+¥2,641,921（+36.9%）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Step 5 (implementation) -->
+  <div class="section" id="step5">
+    <div class="section-header">
+      <span class="step-badge">Step 5</span>
+      <span class="section-title">ダッシュボードの実装</span>
+    </div>
+
+    <h2>ファイル構成</h2>
+    <div class="file-tree">
+      <span class="folder">Desktop/Investment management/</span><br>
+      &nbsp;&nbsp;├── <span class="file">投資ダッシュボード.html</span> &nbsp;<span class="note">← メイン成果物（単一ファイル完結）</span><br>
+      &nbsp;&nbsp;├── <span class="file">fetch_dividends.py</span> &nbsp;<span class="note">← 配当スクレイピングスクリプト（★新規）</span><br>
+      &nbsp;&nbsp;├── <span class="file">ダッシュボード作成マニュアル.md</span> &nbsp;<span class="note">← Markdownマニュアル</span><br>
+      &nbsp;&nbsp;└── <span class="file">ダッシュボード作成マニュアル.html</span> &nbsp;<span class="note">← このファイル</span>
+    </div>
+
+    <h2>HTML のセクション構成</h2>
+    <table>
+      <thead><tr><th>#</th><th>セクション</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>ヘッダー</td><td>時価評価額合計・評価損益・年間配当金予想（スクレイピング値）</td></tr>
+        <tr><td>2</td><td>カテゴリサマリーカード（4枚）</td><td>投資信託・ETF / 個別株式 / ゴールド / 債券</td></tr>
+        <tr><td>3</td><td>ドーナツチャート × 2</td><td>カテゴリ別 / 投資種別（米国インデックス等）</td></tr>
+        <tr><td>4</td><td>投資信託・ETF 一覧テーブル</td><td>全ファンド・ETFの損益率付き一覧</td></tr>
+        <tr><td>5</td><td>個別株式 一覧テーブル</td><td>配当利回りを色分け（4.5%以上=緑、3%以上=青）</td></tr>
+        <tr><td>6</td><td>セクター別ドーナツ</td><td>個別株のセクター構成</td></tr>
+        <tr><td>7</td><td>銘柄別配当バーチャート</td><td>今期予想年間配当を横棒グラフで表示</td></tr>
+        <tr><td>8</td><td>月別配当カレンダー</td><td>決算月から支払月を推定してバー表示</td></tr>
+        <tr style="background:#fefce8"><td>9</td><td><strong>配当データ詳細（★新規）</strong></td><td>取得元URL・KPIストリップ・前年比増配/減配テーブル</td></tr>
+      </tbody>
+    </table>
+
+    <h2>JavaScript データ定義のフォーマット</h2>
+    <pre><code><span class="comment">// 個別株式データ（22銘柄）</span>
+<span class="comment">// div     = 今期予想年間配当合計[円]（スクレイピング値 × 保有数量）</span>
+<span class="comment">// prevDiv = 前年度実績年間配当合計[円]（Yahoo Finance履歴 × 保有数量）</span>
+<span class="comment">// divUrl  = Yahoo Finance Japan の取得元URL</span>
+<span class="key">const</span> stocks = [
+  { <span class="key">code</span>:<span class="string">'4503'</span>, <span class="key">name</span>:<span class="string">'アステラス製薬'</span>, <span class="key">sector</span>:<span class="string">'医薬品'</span>,
+    <span class="key">qty</span>:<span class="num">100</span>, <span class="key">price</span>:<span class="num">2174</span>, <span class="key">value</span>:<span class="num">217400</span>,
+    <span class="key">pnl</span>:<span class="num">52450</span>, <span class="key">pnlPct</span>:<span class="num">31.79</span>,
+    <span class="key">div</span>:<span class="num">8000</span>, <span class="key">yield</span>:<span class="num">3.68</span>,
+    <span class="key">prevDiv</span>:<span class="num">7800</span>,
+    <span class="key">divUrl</span>:<span class="string">'https://finance.yahoo.co.jp/quote/4503.T'</span> },
+  <span class="comment">// ...</span>
+];</code></pre>
+
+    <h2>使用ライブラリ</h2>
+    <pre><code><span class="comment">&lt;!-- グラフ描画（CDN・インターネット接続が必要） --&gt;</span>
+&lt;script src=<span class="string">"https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"</span>&gt;&lt;/script&gt;</code></pre>
+    <pre><code><span class="comment"># スクレイピング（pip でインストール）</span>
+pip3 install requests beautifulsoup4</code></pre>
+  </div>
+
+  <!-- Step 6 (update methods) -->
+  <div class="section" id="step5">
+    <div class="section-header">
+      <span class="step-badge">Step 6</span>
+      <span class="section-title">データ更新方法</span>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-card a">
+        <div class="method-label">方法 A <span class="rec-badge">推奨</span></div>
+        <p><code>/update-dashboard</code> を実行。① fetch_dividends.py で配当スクレイピング → ② Google Drive MCP でスプレッドシート読み込み → ③ HTML を自動更新。</p>
+      </div>
+      <div class="method-card b">
+        <div class="method-label">方法 B</div>
+        <p><code>python3 fetch_dividends.py</code> を手動実行して結果を確認後、「ダッシュボード更新して」と依頼。</p>
+      </div>
+      <div class="method-card c">
+        <div class="method-label">方法 C</div>
+        <p>HTML を直接編集。<code>const stocks</code> の <code>div</code>・<code>prevDiv</code>・<code>yield</code> と <code>const funds</code> の数値を手動で書き換える。</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>/update-dashboard の自動処理:</strong>
+      <ol style="margin-top:6px; padding-left:18px; font-size:13px;">
+        <li>fetch_dividends.py 実行 → Yahoo Finance Japan から今期予想・前年実績取得</li>
+        <li>Google Drive MCP でスプレッドシート読み込み → 株価・評価損益・保有数量取得</li>
+        <li>投資ダッシュボード.html の全データを書き換え</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Trouble -->
+  <div class="section" id="trouble">
+    <div class="section-header">
+      <span class="step-badge">参考</span>
+      <span class="section-title">トラブルシューティング</span>
+    </div>
+    <table class="trouble-table">
+      <thead><tr><th>問題</th><th>対処法</th></tr></thead>
+      <tbody>
+        <tr><td>グラフが表示されない</td><td>インターネット接続を確認（Chart.js はCDN読み込み）</td></tr>
+        <tr><td>配当スクレイピングが N/A</td><td>Yahoo Finance Japan のHTML構造変更の可能性。fetch_dividends.py のパース部分を確認</td></tr>
+        <tr><td>スクレイピングが全銘柄 N/A</td><td><code>pip3 install requests beautifulsoup4</code> でライブラリをインストール</td></tr>
+        <tr><td>MCP ツールが使えない</td><td>claude.ai で Google Drive の連携状態を確認する</td></tr>
+        <tr><td>データが古い</td><td>Step 6 の方法A〜Cでデータを更新する</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

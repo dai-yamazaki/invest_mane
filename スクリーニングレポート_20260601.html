@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>銘柄スクリーニングレポート 2026/06/01</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #1e40af; --primary-light: #3b82f6;
+      --green: #16a34a;  --red: #dc2626;
+      --bg: #f1f5f9; --card: #fff; --text: #0f172a; --sub: #64748b;
+      --border: #e2e8f0; --shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); font-size:13px; line-height:1.6; }
+
+    /* header */
+    .hdr { background:linear-gradient(135deg,#1e3a8a,#2563eb); color:#fff; padding:24px 32px; }
+    .hdr h1 { font-size:20px; font-weight:800; margin-bottom:6px; }
+    .hdr-meta { font-size:12px; opacity:.75; display:flex; gap:24px; flex-wrap:wrap; margin-top:12px; }
+    .hdr-meta span { display:flex; align-items:center; gap:6px; }
+
+    /* layout */
+    .main { max-width:1280px; margin:0 auto; padding:24px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px; }
+    @media(max-width:900px){ .grid-3,.grid-2{ grid-template-columns:1fr; } }
+
+    /* card */
+    .card { background:var(--card); border-radius:14px; box-shadow:var(--shadow); padding:18px 20px; }
+    .card-title { font-size:14px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .card-title::before { content:''; display:inline-block; width:3px; height:15px; background:var(--primary-light); border-radius:2px; }
+
+    /* kpi */
+    .kpi { border-radius:14px; box-shadow:var(--shadow); padding:16px 18px; background:var(--card); border-top:4px solid; }
+    .kpi.blue  { border-color:#3b82f6; }
+    .kpi.green { border-color:#16a34a; }
+    .kpi.amber { border-color:#f59e0b; }
+    .kpi-label { font-size:11px; color:var(--sub); font-weight:600; text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
+    .kpi-value { font-size:28px; font-weight:800; letter-spacing:-1px; line-height:1; }
+    .kpi-sub   { font-size:11px; color:var(--sub); margin-top:4px; }
+
+    /* criteria */
+    .criteria { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+    .crit-tag { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:5px 12px; border-radius:9999px; font-size:12px; font-weight:600; }
+
+    /* highlight cards */
+    .highlight-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:18px; }
+    .hcard { background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; border-left:4px solid #3b82f6; }
+    .hcard-name  { font-size:13px; font-weight:700; margin-bottom:6px; }
+    .hcard-code  { font-size:11px; color:var(--sub); margin-bottom:8px; }
+    .hcard-row   { display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px; }
+    .hcard-label { color:var(--sub); }
+    .hcard-val   { font-weight:600; }
+    .red  { color:var(--red); }
+    .green { color:var(--green); }
+    .badge { display:inline-block; padding:2px 8px; border-radius:9999px; font-size:10px; font-weight:700; }
+    .badge-star  { background:#fef9c3; color:#854d0e; }
+    .badge-watch { background:#f0fdf4; color:#166534; }
+
+    /* table */
+    .tbl-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    thead tr { background:#f8fafc; }
+    th { padding:9px 10px; text-align:right; font-weight:700; color:var(--sub); border-bottom:2px solid var(--border); white-space:nowrap; }
+    th:first-child,th:nth-child(2),th:nth-child(3) { text-align:left; }
+    td { padding:8px 10px; text-align:right; border-bottom:1px solid #f1f5f9; white-space:nowrap; }
+    td:first-child,td:nth-child(2),td:nth-child(3) { text-align:left; }
+    tr.pass { background:#f0fdf4; }
+    tr:hover { background:#f8fafc; }
+    tr.pass:hover { background:#dcfce7; }
+    .pos { color:var(--green); font-weight:600; }
+    .neg { color:var(--red);   font-weight:600; }
+    .star { font-size:14px; }
+    .na  { color:#cbd5e1; }
+
+    /* chart */
+    .chart-wrap  { position:relative; height:300px; }
+    .chart-wrap2 { position:relative; height:360px; }
+
+    /* note */
+    .note { font-size:11px; color:var(--sub); background:#f8fafc; border-radius:8px; padding:10px 14px; margin-top:14px; border-left:3px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>📊 銘柄スクリーニングレポート</h1>
+  <div style="font-size:13px;opacity:.85;margin-top:4px">「直近株価下落 × 財務健全 × 業績成長」で抽出した注目銘柄</div>
+  <div class="hdr-meta">
+    <span>📅 作成日: 2026年6月1日</span>
+    <span>🔍 対象: 日経225 主要銘柄 70社</span>
+    <span>📡 データ: Yahoo Finance（yfinance）</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI -->
+  <div class="grid-3" style="margin-bottom:18px">
+    <div class="kpi blue">
+      <div class="kpi-label">スクリーニング対象</div>
+      <div class="kpi-value">70<span style="font-size:16px;font-weight:600"> 銘柄</span></div>
+      <div class="kpi-sub">日経225 主要銘柄</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">条件通過（★）</div>
+      <div class="kpi-value">20<span style="font-size:16px;font-weight:600"> 銘柄</span></div>
+      <div class="kpi-sub">通過率 28.6%</div>
+    </div>
+    <div class="kpi amber">
+      <div class="kpi-label">最大下落幅</div>
+      <div class="kpi-value" style="color:#dc2626">-39<span style="font-size:16px;font-weight:600">%</span></div>
+      <div class="kpi-sub">IHI（3ヶ月）</div>
+    </div>
+  </div>
+
+  <!-- 条件 -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-title">スクリーニング条件</div>
+    <div class="criteria">
+      <span class="crit-tag">📉 直近3ヶ月 -5%以上下落</span>
+      <span class="crit-tag">📈 売上高 前年比プラス成長</span>
+      <span class="crit-tag">💰 営業利益率 5%超</span>
+      <span class="crit-tag">📊 ROE 5%超</span>
+    </div>
+    <div class="note">※ 本資料は情報提供のみを目的としており、投資推奨ではありません。最終的な投資判断はご自身の責任で行ってください。</div>
+  </div>
+
+  <!-- 注目銘柄ハイライト -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-title">注目銘柄ピックアップ（条件通過 上位）</div>
+    <div class="highlight-grid" id="highlightGrid"></div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">3ヶ月騰落率 vs 売上成長率（条件通過銘柄）</div>
+      <div class="chart-wrap"><canvas id="scatterChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">条件通過銘柄 — 営業利益率ランキング</div>
+      <div class="chart-wrap"><canvas id="opMarginChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Full table -->
+  <div class="card">
+    <div class="card-title">全銘柄一覧（3ヶ月騰落率 昇順）&nbsp;<span style="font-size:12px;color:var(--sub);font-weight:400">★ = スクリーニング通過</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>コード</th>
+            <th>銘柄名</th>
+            <th>現在値</th>
+            <th>3ヶ月</th>
+            <th>52週高↓</th>
+            <th>売上成長</th>
+            <th>営業利益率</th>
+            <th>ROE</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ── データ ──────────────────────────────────────────────────────────────
+const ALL = [
+  {code:'7013',name:'IHI',           price:2694,  ret3m:-39.0, drop:-42.7, revG: 7.8, opM:12.3, roe:27.8, pass:true},
+  {code:'8267',name:'イオン',         price:1352,  ret3m:-36.8, drop:-53.7, revG:11.3, opM: 4.3, roe: 5.8, pass:false},
+  {code:'5713',name:'住友金属鉱山',   price:8989,  ret3m:-29.9, drop:-32.4, revG:22.5, opM:13.2, roe: 8.7, pass:true},
+  {code:'7011',name:'三菱重工業',     price:3636,  ret3m:-29.8, drop:-30.2, revG:11.3, opM:11.0, roe:12.6, pass:true},
+  {code:'3659',name:'NEXON',         price:2307,  ret3m:-29.4, drop:-48.0, revG:33.6, opM:38.2, roe:11.6, pass:true},
+  {code:'8801',name:'三井不動産',     price:1478,  ret3m:-28.2, drop:-31.5, revG: null, opM:13.1, roe: 8.2, pass:false},
+  {code:'8802',name:'三菱地所',       price:3926,  ret3m:-25.6, drop:-27.4, revG: 0.8, opM:19.1, roe: 8.4, pass:true},
+  {code:'7203',name:'トヨタ自動車',   price:2906,  ret3m:-25.2, drop:-27.4, revG: 1.9, opM: 4.6, roe:10.2, pass:false},
+  {code:'4519',name:'中外製薬',       price:7664,  ret3m:-24.5, drop:-28.4, revG:11.5, opM:49.3, roe:23.7, pass:true},
+  {code:'4523',name:'エーザイ',       price:3808,  ret3m:-24.1, drop:-28.8, revG: 9.1, opM:-0.9, roe: 4.5, pass:false},
+  {code:'1925',name:'大和ハウス',     price:4215,  ret3m:-22.9, drop:-27.4, revG: 4.2, opM:16.3, roe:12.5, pass:true},
+  {code:'4661',name:'OLC（TDR）',    price:2248,  ret3m:-19.2, drop:-39.5, revG: null, opM:15.5, roe: null,pass:false},
+  {code:'4507',name:'塩野義製薬',     price:2865,  ret3m:-18.5, drop:-23.8, revG:32.8, opM:-18.6,roe:13.5, pass:false},
+  {code:'5020',name:'ENEOSホールド',  price:1265,  ret3m:-17.1, drop:-18.5, revG: null, opM: 5.3, roe: 8.5, pass:false},
+  {code:'7974',name:'任天堂',         price:7163,  ret3m:-16.5, drop:-51.6, revG:95.1, opM:14.7, roe:14.9, pass:true},
+  {code:'8002',name:'丸紅',           price:4918,  ret3m:-16.2, drop:-22.3, revG: 1.1, opM: 3.2, roe:13.5, pass:false},
+  {code:'8031',name:'三井物産',       price:5033,  ret3m:-15.9, drop:-24.6, revG:-1.1, opM: 3.9, roe:10.3, pass:false},
+  {code:'2282',name:'NH Foods',      price:5925,  ret3m:-15.4, drop:-20.1, revG:10.5, opM: 1.1, roe: 6.8, pass:false},
+  {code:'1605',name:'INPEX',         price:3416,  ret3m:-15.3, drop:-31.1, revG:-6.5, opM:48.6, roe: 8.3, pass:false},
+  {code:'7270',name:'スバル',         price:2422,  ret3m:-15.1, drop:-33.5, revG:10.1, opM:-2.1, roe: 3.3, pass:false},
+  {code:'8001',name:'伊藤忠商事',     price:1880,  ret3m:-14.8, drop:-17.8, revG: 4.1, opM: 4.6, roe:13.9, pass:false},
+  {code:'3382',name:'セブン&アイ',    price:1834,  ret3m:-14.6, drop:-24.1, revG:-19.0,opM: 4.8, roe: 7.6, pass:false},
+  {code:'6902',name:'デンソー',       price:1869,  ret3m:-14.3, drop:-21.2, revG: 9.1, opM: 8.6, roe: 8.9, pass:true},
+  {code:'1928',name:'積水ハウス',     price:3280,  ret3m:-14.0, drop:-14.4, revG: 5.6, opM:10.3, roe:11.2, pass:true},
+  {code:'6301',name:'コマツ',         price:6470,  ret3m:-13.5, drop:-17.5, revG: 6.1, opM:12.2, roe:11.4, pass:true},
+  {code:'7269',name:'スズキ',         price:1940,  ret3m:-13.2, drop:-21.5, revG:15.2, opM:10.9, roe:13.9, pass:true},
+  {code:'9020',name:'JR東日本',       price:3354,  ret3m:-12.6, drop:-20.4, revG:10.9, opM: 7.7, roe: 8.4, pass:true},
+  {code:'4503',name:'アステラス製薬', price:2174,  ret3m:-11.2, drop:-20.0, revG:20.7, opM:16.5, roe:17.4, pass:true},
+  {code:'7201',name:'日産自動車',     price:375,   ret3m:-10.9, drop:-19.4, revG:-1.7, opM: 2.0, roe:-9.9, pass:false},
+  {code:'5401',name:'日本製鉄',       price:550,   ret3m:-10.9, drop:-21.5, revG:31.0, opM: 4.1, roe: 0.8, pass:false},
+  {code:'6326',name:'クボタ',         price:2790,  ret3m:-10.8, drop:-14.6, revG:13.7, opM:12.1, roe: 8.9, pass:true},
+  {code:'4452',name:'花王',           price:6038,  ret3m:-10.5, drop:-13.8, revG: 6.0, opM:10.9, roe:11.9, pass:true},
+  {code:'6273',name:'SMC',           price:66520, ret3m:-10.5, drop:-23.4, revG:15.4, opM:22.8, roe: 8.3, pass:true},
+  {code:'2413',name:'M3',            price:1474,  ret3m:-10.4, drop:-46.3, revG: 9.6, opM:12.2, roe:12.6, pass:true},
+  {code:'4568',name:'第一三共',       price:2619,  ret3m: -9.6, drop:-37.3, revG:13.7, opM:-0.8, roe:15.8, pass:false},
+  {code:'9104',name:'商船三井',       price:5385,  ret3m: -9.5, drop:-26.5, revG: 5.0, opM: 5.0, roe: 7.6, pass:true},
+  {code:'2501',name:'サッポロHD',     price:1613,  ret3m: -8.8, drop:-15.9, revG:-8.2, opM:-1.9, roe: null,pass:false},
+  {code:'7751',name:'キヤノン',       price:4328,  ret3m: -8.6, drop:-14.0, revG: 3.3, opM: 6.5, roe: 9.4, pass:true},
+  {code:'4183',name:'三井化学',       price:2112,  ret3m: -7.8, drop:-14.8, revG:-4.3, opM: 3.5, roe: 4.8, pass:false},
+  {code:'7267',name:'ホンダ',         price:1402,  ret3m: -7.3, drop:-19.0, revG: 8.6, opM:-17.3,roe:-2.8, pass:false},
+  {code:'8058',name:'三菱商事',       price:4921,  ret3m: -6.7, drop:-18.1, revG:12.0, opM: 1.8, roe: 9.0, pass:false},
+  {code:'4755',name:'楽天グループ',   price:764,   ret3m: -5.8, drop:-28.5, revG:14.4, opM: 5.5, roe:-5.2, pass:false},
+  {code:'3407',name:'旭化成',         price:1768,  ret3m: -4.8, drop: -6.4, revG: 2.1, opM: 7.8, roe: 8.0, pass:false},
+  {code:'2503',name:'キリンHD',       price:2612,  ret3m: -4.7, drop: -5.8, revG: 5.0, opM: 8.4, roe:12.2, pass:false},
+  {code:'9101',name:'日本郵船',       price:5275,  ret3m: -3.9, drop:-17.5, revG:-0.0, opM: 6.3, roe: 7.1, pass:false},
+  {code:'9432',name:'NTT',           price:148,   ret3m: -1.2, drop:-11.5, revG: 9.1, opM: 9.6, roe:10.0, pass:false},
+  {code:'6758',name:'ソニーグループ', price:3542,  ret3m: -1.0, drop:-25.8, revG:15.4, opM: 7.6, roe:12.4, pass:false},
+  {code:'6857',name:'アドバンテスト', price:25675, ret3m: -0.3, drop:-20.8, revG:41.2, opM:46.7, roe:57.6, pass:false},
+  {code:'2914',name:'JT',            price:6068,  ret3m:  1.4, drop: -6.3, revG:11.7, opM:32.7, roe:13.6, pass:false},
+  {code:'9433',name:'KDDI',          price:2684,  ret3m:  2.3, drop: -5.1, revG: 8.8, opM:14.7, roe:14.0, pass:false},
+  {code:'8316',name:'三井住友FG',     price:5861,  ret3m:  3.9, drop: -6.7, revG: null,opM:26.9, roe: 9.8, pass:false},
+  {code:'8411',name:'みずほFG',       price:7185,  ret3m:  6.7, drop: -9.7, revG:16.7, opM:32.5, roe:11.4, pass:false},
+  {code:'2267',name:'ヤクルト',       price:2758,  ret3m:  7.5, drop:-10.8, revG: 1.1, opM: 3.5, roe: 7.7, pass:false},
+  {code:'4578',name:'大塚HD',         price:11400, ret3m:  9.1, drop: -4.3, revG: 8.2, opM:18.8, roe:12.9, pass:false},
+  {code:'8306',name:'三菱UFJ',        price:3023,  ret3m:  9.3, drop: -4.6, revG: null,opM:39.5, roe:11.9, pass:false},
+  {code:'2802',name:'味の素',         price:5380,  ret3m:  9.6, drop: -6.3, revG:10.5, opM:14.1, roe:17.5, pass:false},
+  {code:'4689',name:'LYコーポレ',     price:424,   ret3m: 12.0, drop:-25.9, revG:10.7, opM:10.6, roe: 7.9, pass:false},
+  {code:'4543',name:'テルモ',         price:2346,  ret3m: 15.9, drop:-16.8, revG:13.8, opM:14.9, roe: 9.2, pass:false},
+  {code:'6954',name:'ファナック',     price:8081,  ret3m: 17.2, drop: -9.0, revG:10.6, opM:23.9, roe: 9.4, pass:false},
+  {code:'6367',name:'ダイキン',       price:23630, ret3m: 18.6, drop: -8.8, revG:16.4, opM: 7.9, roe: 9.3, pass:false},
+  {code:'9983',name:'ファストリ',     price:80510, ret3m: 18.8, drop: -2.9, revG:14.8, opM:17.7, roe:20.6, pass:false},
+  {code:'6594',name:'ニデック',       price:2899,  ret3m: 24.1, drop:-12.0, revG: 2.9, opM: 7.2, roe: 6.3, pass:false},
+  {code:'4063',name:'信越化学',       price:7793,  ret3m: 24.3, drop: -1.7, revG: 1.3, opM:21.4, roe:10.7, pass:false},
+  {code:'6861',name:'キーエンス',     price:80220, ret3m: 25.8, drop: -4.7, revG:17.9, opM:53.6, roe: null,pass:false},
+  {code:'7733',name:'オリンパス',     price:1806,  ret3m: 26.3, drop:-16.7, revG: 8.5, opM:16.9, roe: 8.7, pass:false},
+  {code:'6971',name:'京セラ',         price:3538,  ret3m: 29.2, drop: -0.8, revG: 4.9, opM: 8.7, roe: 4.4, pass:false},
+  {code:'4004',name:'レゾナック',     price:18430, ret3m: 47.6, drop:-10.1, revG:-4.1, opM: 7.2, roe: 5.5, pass:false},
+  {code:'6098',name:'リクルートHD',   price:10900, ret3m: 63.3, drop: -4.3, revG:11.5, opM:14.0, roe:30.8, pass:false},
+  {code:'6762',name:'TDK',           price:4104,  ret3m: 77.3, drop: -4.9, revG:21.0, opM: 6.4, roe: 9.9, pass:false},
+  {code:'9984',name:'ソフトバンクG',  price:8541,  ret3m:111.4, drop: -1.0, revG: 7.1, opM:-20.4,roe:32.7, pass:false},
+];
+
+const PASS = ALL.filter(d=>d.pass);
+
+// ── ハイライトカード ─────────────────────────────────────────────────────
+const highlights = [
+  {code:'7013',name:'IHI',          reason:'防衛・航空エンジン需要で急成長。ROE27.8%',color:'#dc2626'},
+  {code:'4519',name:'中外製薬',      reason:'営業利益率49%の超高収益体質。バイオ医薬品継続成長',color:'#7c3aed'},
+  {code:'3659',name:'NEXON',        reason:'売上+34%・利益率38%。ゲームIPが強固',color:'#0369a1'},
+  {code:'7011',name:'三菱重工業',    reason:'防衛・エネルギー需要で増収増益継続',color:'#0369a1'},
+  {code:'7974',name:'任天堂',        reason:'Switch2効果で売上+95%。52週高値-52%は過剰下落の可能性',color:'#15803d'},
+  {code:'5713',name:'住友金属鉱山',  reason:'資源価格上昇で売上+22.5%。貴金属需要も底堅い',color:'#b45309'},
+];
+
+const hg = document.getElementById('highlightGrid');
+highlights.forEach(h => {
+  const d = ALL.find(x=>x.code===h.code);
+  if(!d) return;
+  hg.insertAdjacentHTML('beforeend',`
+    <div class="hcard" style="border-left-color:${h.color}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div class="hcard-name">${h.name}</div>
+        <span class="badge badge-star">★ 通過</span>
+      </div>
+      <div class="hcard-code">${h.code} | ¥${d.price.toLocaleString()}</div>
+      <div class="hcard-row"><span class="hcard-label">3ヶ月騰落率</span><span class="hcard-val red">${d.ret3m.toFixed(1)}%</span></div>
+      <div class="hcard-row"><span class="hcard-label">売上成長率</span><span class="hcard-val green">+${d.revG.toFixed(1)}%</span></div>
+      <div class="hcard-row"><span class="hcard-label">営業利益率</span><span class="hcard-val">${d.opM.toFixed(1)}%</span></div>
+      <div class="hcard-row"><span class="hcard-label">ROE</span><span class="hcard-val">${d.roe.toFixed(1)}%</span></div>
+      <div style="font-size:11px;color:#64748b;margin-top:8px;line-height:1.5">${h.reason}</div>
+    </div>`);
+});
+
+// ── Table ─────────────────────────────────────────────────────────────
+const tb = document.getElementById('tableBody');
+ALL.forEach(d => {
+  const p = s => s > 0 ? `<span class="pos">+${s.toFixed(1)}%</span>` : `<span class="neg">${s.toFixed(1)}%</span>`;
+  const n = v => v !== null ? `${v.toFixed(1)}%` : '<span class="na">-</span>';
+  tb.insertAdjacentHTML('beforeend',`
+    <tr class="${d.pass?'pass':''}">
+      <td class="star">${d.pass?'★':''}</td>
+      <td>${d.code}</td>
+      <td>${d.name}</td>
+      <td>¥${d.price.toLocaleString()}</td>
+      <td>${p(d.ret3m)}</td>
+      <td>${p(d.drop)}</td>
+      <td>${d.revG!==null?p(d.revG):'<span class="na">-</span>'}</td>
+      <td>${n(d.opM)}</td>
+      <td>${n(d.roe)}</td>
+    </tr>`);
+});
+
+// ── Charts ────────────────────────────────────────────────────────────
+Chart.defaults.font.family = "'Hiragino Sans','Noto Sans JP',sans-serif";
+Chart.defaults.font.size = 11;
+
+// Scatter: 3ヶ月騰落 vs 売上成長
+new Chart(document.getElementById('scatterChart'),{
+  type:'scatter',
+  data:{
+    datasets:[{
+      label:'条件通過',
+      data: PASS.filter(d=>d.revG!==null).map(d=>({x:d.ret3m, y:d.revG, name:d.name})),
+      backgroundColor:'#3b82f6', borderColor:'#1d4ed8', borderWidth:1, pointRadius:7,
+    },{
+      label:'条件外',
+      data: ALL.filter(d=>!d.pass&&d.ret3m<0&&d.revG!==null).map(d=>({x:d.ret3m, y:d.revG, name:d.name})),
+      backgroundColor:'rgba(148,163,184,.5)', borderColor:'#94a3b8', borderWidth:1, pointRadius:5,
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      tooltip:{callbacks:{label:ctx=>`${ctx.raw.name}: 騰落${ctx.raw.x.toFixed(1)}% / 売上+${ctx.raw.y.toFixed(1)}%`}},
+      legend:{position:'top', labels:{boxWidth:10, padding:10}},
+    },
+    scales:{
+      x:{title:{display:true,text:'3ヶ月騰落率 (%)'}, grid:{color:'#f1f5f9'}},
+      y:{title:{display:true,text:'売上成長率 (%)'}, grid:{color:'#f1f5f9'}},
+    }
+  }
+});
+
+// Bar: 営業利益率ランキング
+const sorted = [...PASS].sort((a,b)=>b.opM-a.opM);
+new Chart(document.getElementById('opMarginChart'),{
+  type:'bar',
+  data:{
+    labels: sorted.map(d=>d.name),
+    datasets:[{
+      label:'営業利益率 (%)',
+      data: sorted.map(d=>d.opM),
+      backgroundColor: sorted.map(d=>d.opM>=20?'#16a34a':d.opM>=10?'#3b82f6':'#94a3b8'),
+      borderRadius:4, borderSkipped:false,
+    }]
+  },
+  options:{
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x.toFixed(1)}%`}}},
+    scales:{
+      x:{beginAtZero:true, grid:{color:'#f1f5f9'},
+        ticks:{callback:v=>v+'%'}},
+      y:{grid:{display:false}, ticks:{font:{size:11}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
