@@ -215,15 +215,15 @@
   <div class="grid-4">
     <div class="cat-card fund">
       <div class="cat-label">投資信託・ETF</div>
-      <div class="cat-value">¥7,528,499</div>
-      <div class="cat-share">構成比 75.7%</div>
-      <div class="cat-pnl pnl-pos">+¥2,334,324 &nbsp;（+44.94%）</div>
+      <div class="cat-value">¥7,441,147</div>
+      <div class="cat-share">構成比 74.8%</div>
+      <div class="cat-pnl pnl-pos">+¥2,321,179 &nbsp;（+45.34%）</div>
     </div>
     <div class="cat-card stock">
       <div class="cat-label">個別株式</div>
-      <div class="cat-value">¥1,294,034</div>
-      <div class="cat-share">構成比 13.0%</div>
-      <div class="cat-pnl pnl-pos">+¥20,588 &nbsp;（+1.62%）</div>
+      <div class="cat-value">¥1,381,386</div>
+      <div class="cat-share">構成比 13.9%（国内 22 + 米国 2）</div>
+      <div class="cat-pnl pnl-pos">+¥33,733 &nbsp;（+2.50%）</div>
     </div>
     <div class="cat-card gold">
       <div class="cat-label">ゴールド</div>
@@ -301,6 +301,36 @@
             <td class="pnl-pos">+1.62%</td>
             <td>¥42,923</td>
             <td>3.32%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== US Individual Stocks Table ===== -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">米国個別株 保有一覧</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>銘柄名</th>
+            <th>ティッカー</th>
+            <th>カテゴリ</th>
+            <th>数量</th>
+            <th>現在値 (USD)</th>
+            <th>時価評価額</th>
+            <th>評価損益</th>
+            <th>損益率</th>
+          </tr>
+        </thead>
+        <tbody id="usStockBody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">合計</td>
+            <td>¥87,352</td>
+            <td class="pnl-pos">+¥13,145</td>
+            <td class="pnl-pos">+17.71%</td>
           </tr>
         </tfoot>
       </table>
@@ -387,9 +417,7 @@ const funds = [
   { name: 'NFナスダックヘッジ無(1545)',     type: 'ETF',  cat: '米国インデックス', value:  239600, pnl:   92250, pnlPct: 62.60 },
   { name: 'iFreeNEXT インド株',             type: '投信', cat: '新興国株',       value:  141914, pnl:   -8086, pnlPct: -5.39 },
   { name: 'SS SPDR S&P500(1557)',           type: 'ETF',  cat: '米国インデックス', value:  118350, pnl:   47790, pnlPct: 67.73 },
-  { name: 'スペースX(SPCX)',               type: 'ETF',  cat: '米国グロース株', value:   77367, pnl:   12456, pnlPct: 19.19 },
   { name: '楽天・日本高配当',               type: '投信', cat: '国内高配当',     value:   35699, pnl:     699, pnlPct:  2.00 },
-  { name: 'ブリティッシュ・アメリカン・タバコ(BTI)', type: 'ETF', cat: '米国高配当', value: 9985, pnl: 689, pnlPct: 7.41 },
   { name: 'NF日経高配当50(1489)',            type: 'ETF',  cat: '国内高配当',     value:    6398, pnl:    1872, pnlPct: 41.36 },
   { name: 'NF日経半導体株(200A)',            type: 'ETF',  cat: '半導体',        value:    5348, pnl:     143, pnlPct:  2.75 },
 ];
@@ -427,6 +455,12 @@ const stocks = [
   { code:'7172', name:'ジャパンInvest.A',    sector:'証券・商品先物',type:'国内高配当',   qty: 10, price:2024,   value: 20240, pnl:   670, pnlPct:  3.42, div: 1080, yield: 5.34, prevDiv:  870, divUrl:'https://finance.yahoo.co.jp/quote/7172.T' },
   { code:'5401', name:'日本製鉄',            sector:'鉄鋼',          type:'国内高配当',   qty: 30, price:551.6,  value: 16548, pnl: -2181, pnlPct:-11.64, div:  720, yield: 4.35, prevDiv:  720, divUrl:'https://finance.yahoo.co.jp/quote/5401.T' },
   { code:'6349', name:'小森コーポレーション',sector:'機械',          type:'国内高配当',   qty: 10, price:1454,   value: 14540, pnl: -2630, pnlPct:-15.31, div:  750, yield: 5.16, prevDiv:  700, divUrl:'https://finance.yahoo.co.jp/quote/6349.T' },
+];
+
+// US individual stocks (non-fund, non-ETF)
+const usStocks = [
+  { ticker:'SPCX', name:'スペースX',                        cat:'米国グロース株', qty:3, price:160.95, value:77367, pnl:12456, pnlPct:19.19 },
+  { ticker:'BTI',  name:'ブリティッシュ・アメリカン・タバコ', cat:'米国高配当',    qty:1, price: 62.32, value: 9985, pnl:  689, pnlPct: 7.41 },
 ];
 
 // ============================================================
@@ -498,6 +532,24 @@ const stockBody = document.getElementById('stockBody');
 });
 
 // ============================================================
+// US STOCK TABLE
+// ============================================================
+const usStockBody = document.getElementById('usStockBody');
+[...usStocks].sort((a,b)=>b.value-a.value).forEach(s => {
+  usStockBody.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td>${s.name}</td>
+      <td style="color:#64748b">${s.ticker}</td>
+      <td style="font-size:11px; color:#64748b">${s.cat}</td>
+      <td style="text-align:right">${s.qty.toLocaleString()}</td>
+      <td>$${s.price.toLocaleString()}</td>
+      <td>${fmt(s.value)}</td>
+      <td class="${pc(s.pnl)}">${fmtS(s.pnl)}</td>
+      <td class="${pc(s.pnlPct)}">${fmtP(s.pnlPct)}</td>
+    </tr>`);
+});
+
+// ============================================================
 // CHARTS  (Chart.defaults)
 // ============================================================
 Chart.defaults.font.family = "'Hiragino Sans', 'Noto Sans JP', sans-serif";
@@ -531,7 +583,7 @@ function donut(id, labels, data, colors) {
 // Category donut
 donut('catChart',
   ['投資信託・ETF', '個別株式', 'ゴールド', '債券'],
-  [7528499, 1294034, 710909, 411791],
+  [7441147, 1381386, 710909, 411791],
   ['#3b82f6','#f59e0b','#eab308','#94a3b8']
 );
 
