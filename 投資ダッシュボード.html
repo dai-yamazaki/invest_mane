@@ -188,23 +188,23 @@
 <div class="header">
   <div class="header-top">
     <div class="header-title">📊 投資ポートフォリオ ダッシュボード</div>
-    <div class="header-date">データ: 2026年6月10日 / 楽天証券</div>
+    <div class="header-date">データ: 2026年6月13日 / 楽天証券</div>
   </div>
   <div class="header-stats">
     <div>
       <div class="stat-label">時価評価額合計</div>
-      <div class="stat-value">¥9,862,124</div>
-      <div class="stat-sub pos">+¥2,489,726 &nbsp;（+33.8%）</div>
+      <div class="stat-value">¥9,945,233</div>
+      <div class="stat-sub pos">+¥2,507,923 &nbsp;（+33.72%）</div>
     </div>
     <div>
       <div class="stat-label">年間配当金予想（個別株）</div>
       <div class="stat-value" style="font-size:24px">¥42,923</div>
-      <div class="stat-sub pos">前年比 +¥2,077 &nbsp;/&nbsp; 利回り 3.35%</div>
+      <div class="stat-sub pos">前年比 +¥2,077 &nbsp;/&nbsp; 利回り 3.32%</div>
     </div>
     <div>
       <div class="stat-label">保有銘柄数</div>
       <div class="stat-value" style="font-size:24px">22銘柄</div>
-      <div class="stat-sub" style="opacity:.8">個別株 + 17ファンド/ETF</div>
+      <div class="stat-sub" style="opacity:.8">個別株 + 18ファンド/ETF</div>
     </div>
   </div>
 </div>
@@ -215,27 +215,27 @@
   <div class="grid-4">
     <div class="cat-card fund">
       <div class="cat-label">投資信託・ETF</div>
-      <div class="cat-value">¥7,452,405</div>
-      <div class="cat-share">構成比 75.6%</div>
-      <div class="cat-pnl pnl-pos">+¥2,323,142 &nbsp;（+45.3%）</div>
+      <div class="cat-value">¥7,528,499</div>
+      <div class="cat-share">構成比 75.7%</div>
+      <div class="cat-pnl pnl-pos">+¥2,334,324 &nbsp;（+44.94%）</div>
     </div>
     <div class="cat-card stock">
       <div class="cat-label">個別株式</div>
-      <div class="cat-value">¥1,282,657</div>
+      <div class="cat-value">¥1,294,034</div>
       <div class="cat-share">構成比 13.0%</div>
-      <div class="cat-pnl pnl-pos">+¥9,211 &nbsp;（+0.7%）</div>
+      <div class="cat-pnl pnl-pos">+¥20,588 &nbsp;（+1.62%）</div>
     </div>
     <div class="cat-card gold">
       <div class="cat-label">ゴールド</div>
-      <div class="cat-value">¥718,876</div>
-      <div class="cat-share">構成比 7.3%</div>
-      <div class="cat-pnl pnl-pos">+¥175,821 &nbsp;（+32.4%）</div>
+      <div class="cat-value">¥710,909</div>
+      <div class="cat-share">構成比 7.2%</div>
+      <div class="cat-pnl pnl-pos">+¥167,854 &nbsp;（+30.91%）</div>
     </div>
     <div class="cat-card bond">
       <div class="cat-label">債券（超長期米国債）</div>
-      <div class="cat-value">¥408,186</div>
+      <div class="cat-value">¥411,791</div>
       <div class="cat-share">構成比 4.1%</div>
-      <div class="cat-pnl pnl-neg">-¥18,448 &nbsp;（-4.3%）</div>
+      <div class="cat-pnl pnl-neg">-¥14,843 &nbsp;（-3.47%）</div>
     </div>
   </div>
 
@@ -296,11 +296,11 @@
         <tfoot>
           <tr>
             <td colspan="5">合計</td>
-            <td>¥1,282,657</td>
-            <td class="pnl-pos">+¥9,211</td>
-            <td class="pnl-pos">+0.7%</td>
+            <td>¥1,294,034</td>
+            <td class="pnl-pos">+¥20,588</td>
+            <td class="pnl-pos">+1.62%</td>
             <td>¥42,923</td>
-            <td>3.35%</td>
+            <td>3.32%</td>
           </tr>
         </tfoot>
       </table>
@@ -339,7 +339,7 @@
     <div class="div-source-bar">
       <span>📡 取得元:</span>
       <a href="https://finance.yahoo.co.jp/" target="_blank" class="source-link">Yahoo Finance Japan</a>
-      <span class="div-source-date">最終取得: 2026年6月10日</span>
+      <span class="div-source-date">最終取得: 2026年6月13日</span>
       <span class="div-source-note">※ 今期予想（会社発表）と前年度実績（Yahoo Finance履歴）の比較</span>
     </div>
 
@@ -375,57 +375,58 @@
 // ============================================================
 // DATA
 // ============================================================
-const TOTAL = 9862124;
+const TOTAL = 9945233;
 
 const funds = [
-  { name: 'eMAXIS Slim S&P500',           type: '投信', cat: '米国インデックス', value: 3496358, pnl: 1076190, pnlPct: 44.47 },
-  { name: 'eMAXIS Slim オルカン',          type: '投信', cat: '世界インデックス', value: 1786285, pnl:  597196, pnlPct: 50.22 },
-  { name: '楽天・全米株式(VTI)',            type: '投信', cat: '米国インデックス', value:  530062, pnl:  280996, pnlPct: 112.82 },
-  { name: '楽天・NASDAQ-100',              type: '投信', cat: '米国インデックス', value:  419172, pnl:  109172, pnlPct: 35.21 },
-  { name: '楽天・SCHD(米国高配当)',         type: '投信', cat: '米国高配当',     value:  401482, pnl:   66931, pnlPct: 20.00 },
-  { name: 'Tracers 日経高配当50',           type: '投信', cat: '国内高配当',     value:  267934, pnl:   63482, pnlPct: 31.04 },
-  { name: 'NFナスダックヘッジ無(1545)',     type: 'ETF',  cat: '米国インデックス', value:  234200, pnl:   86850, pnlPct: 58.94 },
-  { name: 'iFreeNEXT インド株',             type: '投信', cat: '新興国株',       value:  142472, pnl:   -7528, pnlPct: -5.01 },
-  { name: 'SS SPDR S&P500(1557)',           type: 'ETF',  cat: '米国インデックス', value:  117850, pnl:   47290, pnlPct: 67.02 },
-  { name: '楽天・日本高配当',               type: '投信', cat: '国内高配当',     value:   35812, pnl:     812, pnlPct:  2.31 },
-  { name: 'ブリティッシュ・アメリカン・タバコ(BTI)', type: 'ETF', cat: '米国高配当', value: 9612, pnl: 316, pnlPct: 3.39 },
-  { name: 'NF日経高配当50(1489)',            type: 'ETF',  cat: '国内高配当',     value:    6302, pnl:    1776, pnlPct: 39.23 },
-  { name: 'NF日経半導体株(200A)',            type: 'ETF',  cat: '半導体',        value:    4864, pnl:    -341, pnlPct: -6.55 },
+  { name: 'eMAXIS Slim S&P500',           type: '投信', cat: '米国インデックス', value: 3488099, pnl: 1067931, pnlPct: 44.13 },
+  { name: 'eMAXIS Slim オルカン',          type: '投信', cat: '世界インデックス', value: 1785709, pnl:  596619, pnlPct: 50.17 },
+  { name: '楽天・全米株式(VTI)',            type: '投信', cat: '米国インデックス', value:  529328, pnl:  280262, pnlPct: 112.52 },
+  { name: '楽天・NASDAQ-100',              type: '投信', cat: '米国インデックス', value:  419261, pnl:  109261, pnlPct: 35.25 },
+  { name: '楽天・SCHD(米国高配当)',         type: '投信', cat: '米国高配当',     value:  404055, pnl:   69504, pnlPct: 20.77 },
+  { name: 'Tracers 日経高配当50',           type: '投信', cat: '国内高配当',     value:  267386, pnl:   62934, pnlPct: 30.78 },
+  { name: 'NFナスダックヘッジ無(1545)',     type: 'ETF',  cat: '米国インデックス', value:  239600, pnl:   92250, pnlPct: 62.60 },
+  { name: 'iFreeNEXT インド株',             type: '投信', cat: '新興国株',       value:  141914, pnl:   -8086, pnlPct: -5.39 },
+  { name: 'SS SPDR S&P500(1557)',           type: 'ETF',  cat: '米国インデックス', value:  118350, pnl:   47790, pnlPct: 67.73 },
+  { name: 'スペースX(SPCX)',               type: 'ETF',  cat: '米国グロース株', value:   77367, pnl:   12456, pnlPct: 19.19 },
+  { name: '楽天・日本高配当',               type: '投信', cat: '国内高配当',     value:   35699, pnl:     699, pnlPct:  2.00 },
+  { name: 'ブリティッシュ・アメリカン・タバコ(BTI)', type: 'ETF', cat: '米国高配当', value: 9985, pnl: 689, pnlPct: 7.41 },
+  { name: 'NF日経高配当50(1489)',            type: 'ETF',  cat: '国内高配当',     value:    6398, pnl:    1872, pnlPct: 41.36 },
+  { name: 'NF日経半導体株(200A)',            type: 'ETF',  cat: '半導体',        value:    5348, pnl:     143, pnlPct:  2.75 },
 ];
 const goldETFs = [
-  { name: 'iシェアーズ ゴールド(IAU)',  type: 'ETF', value: 577765, pnl:  167445, pnlPct: 40.80 },
-  { name: 'SPDRゴールドミニ(GLDM)',     type: 'ETF', value:  81066, pnl:  -10980, pnlPct: -11.92 },
-  { name: '純金上場信託(1540)',          type: 'ETF', value:  60045, pnl:   19356, pnlPct: 47.56 },
+  { name: 'iシェアーズ ゴールド(IAU)',  type: 'ETF', value: 570987, pnl:  160667, pnlPct: 39.15 },
+  { name: 'SPDRゴールドミニ(GLDM)',     type: 'ETF', value:  80102, pnl:  -11944, pnlPct: -12.97 },
+  { name: '純金上場信託(1540)',          type: 'ETF', value:  59820, pnl:   19131, pnlPct: 47.01 },
 ];
 const bondETFs = [
-  { name: 'バンガード超長期米国債(EDV)', type: 'ETF', value: 408186, pnl: -18448, pnlPct: -4.32 },
+  { name: 'バンガード超長期米国債(EDV)', type: 'ETF', value: 411791, pnl: -14843, pnlPct: -3.47 },
 ];
 
 // Individual stocks sorted by value desc
 // div = 今期予想年間配当[円], prevDiv = 前年度実績年間配当[円]（Yahoo Finance履歴より）
 const stocks = [
-  { code:'4503', name:'アステラス製薬',      sector:'医薬品',        type:'国内高配当',   qty:100, price:2127.5, value:212750, pnl: 47800, pnlPct: 28.97, div: 8000, yield: 3.76, prevDiv: 7800, divUrl:'https://finance.yahoo.co.jp/quote/4503.T' },
-  { code:'8111', name:'ゴールドウイン',      sector:'繊維製品',      type:'国内グロース', qty:100, price:2120,   value:212000, pnl:-25700, pnlPct:-10.81, div: 7000, yield: 3.30, prevDiv: 5800, divUrl:'https://finance.yahoo.co.jp/quote/8111.T' },
-  { code:'7974', name:'任天堂',              sector:'その他製品',    type:'国内グロース', qty: 14, price:7102,   value: 99428, pnl:-37665, pnlPct:-27.47, div: 2268, yield: 2.28, prevDiv: 3066, divUrl:'https://finance.yahoo.co.jp/quote/7974.T' },
-  { code:'1605', name:'INPEX',               sector:'鉱業',          type:'国内高配当',   qty: 25, price:3488,   value: 87200, pnl:  -555, pnlPct: -0.63, div: 2700, yield: 3.10, prevDiv: 2500, divUrl:'https://finance.yahoo.co.jp/quote/1605.T' },
-  { code:'5108', name:'ブリヂストン',        sector:'ゴム製品',      type:'国内高配当',   qty: 20, price:3404,   value: 68080, pnl:  2430, pnlPct:  3.70, div: 2500, yield: 3.67, prevDiv: 2300, divUrl:'https://finance.yahoo.co.jp/quote/5108.T' },
-  { code:'8306', name:'三菱UFJ',             sector:'銀行業',        type:'国内高配当',   qty: 20, price:3180,   value: 63600, pnl:  6180, pnlPct: 10.76, div: 1920, yield: 3.02, prevDiv: 1720, divUrl:'https://finance.yahoo.co.jp/quote/8306.T' },
-  { code:'8316', name:'三井住友FG',          sector:'銀行業',        type:'国内高配当',   qty: 10, price:6238,   value: 62380, pnl:  8655, pnlPct: 16.10, div: 1800, yield: 2.89, prevDiv: 1570, divUrl:'https://finance.yahoo.co.jp/quote/8316.T' },
-  { code:'9432', name:'NTT',                 sector:'情報・通信業',  type:'国内高配当',   qty:400, price:148.4,  value: 59360, pnl: -3690, pnlPct: -5.85, div: 2160, yield: 3.64, prevDiv: 2120, divUrl:'https://finance.yahoo.co.jp/quote/9432.T' },
-  { code:'9433', name:'KDDI',                sector:'情報・通信業',  type:'国内高配当',   qty: 20, price:2742,   value: 54840, pnl:  2590, pnlPct:  4.95, div: 1680, yield: 3.06, prevDiv: 1600, divUrl:'https://finance.yahoo.co.jp/quote/9433.T' },
+  { code:'8111', name:'ゴールドウイン',      sector:'繊維製品',      type:'国内グロース', qty:100, price:2171,   value:217100, pnl:-20600, pnlPct: -8.66, div: 7000, yield: 3.22, prevDiv: 5800, divUrl:'https://finance.yahoo.co.jp/quote/8111.T' },
+  { code:'4503', name:'アステラス製薬',      sector:'医薬品',        type:'国内高配当',   qty:100, price:2140,   value:214000, pnl: 49050, pnlPct: 29.73, div: 8000, yield: 3.74, prevDiv: 7800, divUrl:'https://finance.yahoo.co.jp/quote/4503.T' },
+  { code:'7974', name:'任天堂',              sector:'その他製品',    type:'国内グロース', qty: 14, price:7174,   value:100436, pnl:-36657, pnlPct:-26.73, div: 2268, yield: 2.26, prevDiv: 3066, divUrl:'https://finance.yahoo.co.jp/quote/7974.T' },
+  { code:'1605', name:'INPEX',               sector:'鉱業',          type:'国内高配当',   qty: 25, price:3559,   value: 88975, pnl:  1220, pnlPct:  1.39, div: 2700, yield: 3.03, prevDiv: 2500, divUrl:'https://finance.yahoo.co.jp/quote/1605.T' },
+  { code:'5108', name:'ブリヂストン',        sector:'ゴム製品',      type:'国内高配当',   qty: 20, price:3396,   value: 67920, pnl:  2270, pnlPct:  3.45, div: 2500, yield: 3.68, prevDiv: 2300, divUrl:'https://finance.yahoo.co.jp/quote/5108.T' },
+  { code:'8316', name:'三井住友FG',          sector:'銀行業',        type:'国内高配当',   qty: 10, price:6406,   value: 64060, pnl: 10335, pnlPct: 19.23, div: 1800, yield: 2.81, prevDiv: 1570, divUrl:'https://finance.yahoo.co.jp/quote/8316.T' },
+  { code:'8306', name:'三菱UFJ',             sector:'銀行業',        type:'国内高配当',   qty: 20, price:3162,   value: 63240, pnl:  5820, pnlPct: 10.13, div: 1920, yield: 3.04, prevDiv: 1720, divUrl:'https://finance.yahoo.co.jp/quote/8306.T' },
+  { code:'9432', name:'NTT',                 sector:'情報・通信業',  type:'国内高配当',   qty:400, price:148,    value: 59200, pnl: -3850, pnlPct: -6.10, div: 2160, yield: 3.65, prevDiv: 2120, divUrl:'https://finance.yahoo.co.jp/quote/9432.T' },
+  { code:'9433', name:'KDDI',                sector:'情報・通信業',  type:'国内高配当',   qty: 20, price:2769,   value: 55380, pnl:  3130, pnlPct:  5.99, div: 1680, yield: 3.03, prevDiv: 1600, divUrl:'https://finance.yahoo.co.jp/quote/9433.T' },
   { code:'1377', name:'サカタのタネ',        sector:'水産・農林業',  type:'国内グロース', qty: 10, price:4185,   value: 41850, pnl:  1500, pnlPct:  3.71, div:  750, yield: 1.79, prevDiv:  750, divUrl:'https://finance.yahoo.co.jp/quote/1377.T' },
-  { code:'8593', name:'三菱HCキャピタル',    sector:'その他金融業',  type:'国内高配当',   qty: 30, price:1322,   value: 39660, pnl: -2569, pnlPct: -6.08, div: 1530, yield: 3.86, prevDiv: 1380, divUrl:'https://finance.yahoo.co.jp/quote/8593.T' },
-  { code:'6432', name:'竹内製作所',          sector:'機械',          type:'国内高配当',   qty:  5, price:7420,   value: 37100, pnl:  4040, pnlPct: 12.22, div: 1100, yield: 2.96, prevDiv: 1050, divUrl:'https://finance.yahoo.co.jp/quote/6432.T' },
-  { code:'1928', name:'積水ハウス',          sector:'建設業',        type:'国内高配当',   qty: 10, price:3317,   value: 33170, pnl: -2005, pnlPct: -5.70, div: 1450, yield: 4.37, prevDiv: 1440, divUrl:'https://finance.yahoo.co.jp/quote/1928.T' },
-  { code:'9434', name:'ソフトバンク',        sector:'情報・通信業',  type:'国内高配当',   qty:150, price:213.8,  value: 32070, pnl:  -150, pnlPct: -0.46, div: 1320, yield: 4.12, prevDiv: 1290, divUrl:'https://finance.yahoo.co.jp/quote/9434.T' },
-  { code:'9104', name:'商船三井',            sector:'海運業',        type:'国内高配当',   qty:  5, price:5616,   value: 28080, pnl:  4405, pnlPct: 18.60, div: 1025, yield: 3.65, prevDiv: 1000, divUrl:'https://finance.yahoo.co.jp/quote/9104.T' },
-  { code:'7203', name:'トヨタ自動車',        sector:'輸送用機器',    type:'国内高配当',   qty: 10, price:2798.5, value: 27985, pnl: -2175, pnlPct: -7.21, div: 1000, yield: 3.57, prevDiv:  950, divUrl:'https://finance.yahoo.co.jp/quote/7203.T' },
-  { code:'6326', name:'クボタ',              sector:'機械',          type:'国内グロース', qty: 10, price:2761,   value: 27610, pnl:  5940, pnlPct: 27.41, div:  520, yield: 1.88, prevDiv:  500, divUrl:'https://finance.yahoo.co.jp/quote/6326.T' },
-  { code:'8725', name:'MS&AD',               sector:'保険業',        type:'国内高配当',   qty:  5, price:4587,   value: 22935, pnl:  3170, pnlPct: 16.03, div:  850, yield: 3.71, prevDiv:  800, divUrl:'https://finance.yahoo.co.jp/quote/8725.T' },
-  { code:'9101', name:'日本郵船',            sector:'海運業',        type:'国内高配当',   qty:  4, price:5524,   value: 22096, pnl:  2016, pnlPct: 10.03, div:  800, yield: 3.62, prevDiv:  920, divUrl:'https://finance.yahoo.co.jp/quote/9101.T' },
-  { code:'7172', name:'ジャパンInvest.A',    sector:'証券・商品先物',type:'国内高配当',   qty: 10, price:2008,   value: 20080, pnl:   510, pnlPct:  2.60, div: 1080, yield: 5.38, prevDiv:  870, divUrl:'https://finance.yahoo.co.jp/quote/7172.T' },
-  { code:'5401', name:'日本製鉄',            sector:'鉄鋼',          type:'国内高配当',   qty: 30, price:539.1,  value: 16173, pnl: -2556, pnlPct:-13.64, div:  720, yield: 4.45, prevDiv:  720, divUrl:'https://finance.yahoo.co.jp/quote/5401.T' },
-  { code:'6349', name:'小森コーポレーション',sector:'機械',          type:'国内高配当',   qty: 10, price:1421,   value: 14210, pnl: -2960, pnlPct:-17.23, div:  750, yield: 5.28, prevDiv:  700, divUrl:'https://finance.yahoo.co.jp/quote/6349.T' },
+  { code:'8593', name:'三菱HCキャピタル',    sector:'その他金融業',  type:'国内高配当',   qty: 30, price:1319,   value: 39570, pnl: -2659, pnlPct: -6.29, div: 1530, yield: 3.87, prevDiv: 1380, divUrl:'https://finance.yahoo.co.jp/quote/8593.T' },
+  { code:'6432', name:'竹内製作所',          sector:'機械',          type:'国内高配当',   qty:  5, price:7380,   value: 36900, pnl:  3840, pnlPct: 11.61, div: 1100, yield: 2.98, prevDiv: 1050, divUrl:'https://finance.yahoo.co.jp/quote/6432.T' },
+  { code:'1928', name:'積水ハウス',          sector:'建設業',        type:'国内高配当',   qty: 10, price:3289,   value: 32890, pnl: -2285, pnlPct: -6.49, div: 1450, yield: 4.41, prevDiv: 1440, divUrl:'https://finance.yahoo.co.jp/quote/1928.T' },
+  { code:'9434', name:'ソフトバンク',        sector:'情報・通信業',  type:'国内高配当',   qty:150, price:213.5,  value: 32025, pnl:  -195, pnlPct: -0.60, div: 1320, yield: 4.12, prevDiv: 1290, divUrl:'https://finance.yahoo.co.jp/quote/9434.T' },
+  { code:'9104', name:'商船三井',            sector:'海運業',        type:'国内高配当',   qty:  5, price:5765,   value: 28825, pnl:  5150, pnlPct: 21.75, div: 1025, yield: 3.56, prevDiv: 1000, divUrl:'https://finance.yahoo.co.jp/quote/9104.T' },
+  { code:'7203', name:'トヨタ自動車',        sector:'輸送用機器',    type:'国内高配当',   qty: 10, price:2775.5, value: 27755, pnl: -2405, pnlPct: -7.97, div: 1000, yield: 3.60, prevDiv:  950, divUrl:'https://finance.yahoo.co.jp/quote/7203.T' },
+  { code:'6326', name:'クボタ',              sector:'機械',          type:'国内グロース', qty: 10, price:2707.5, value: 27075, pnl:  5405, pnlPct: 24.94, div:  520, yield: 1.92, prevDiv:  500, divUrl:'https://finance.yahoo.co.jp/quote/6326.T' },
+  { code:'8725', name:'MS&AD',               sector:'保険業',        type:'国内高配当',   qty:  5, price:4597,   value: 22985, pnl:  3220, pnlPct: 16.29, div:  850, yield: 3.70, prevDiv:  800, divUrl:'https://finance.yahoo.co.jp/quote/8725.T' },
+  { code:'9101', name:'日本郵船',            sector:'海運業',        type:'国内高配当',   qty:  4, price:5630,   value: 22520, pnl:  2440, pnlPct: 12.15, div:  800, yield: 3.55, prevDiv:  920, divUrl:'https://finance.yahoo.co.jp/quote/9101.T' },
+  { code:'7172', name:'ジャパンInvest.A',    sector:'証券・商品先物',type:'国内高配当',   qty: 10, price:2024,   value: 20240, pnl:   670, pnlPct:  3.42, div: 1080, yield: 5.34, prevDiv:  870, divUrl:'https://finance.yahoo.co.jp/quote/7172.T' },
+  { code:'5401', name:'日本製鉄',            sector:'鉄鋼',          type:'国内高配当',   qty: 30, price:551.6,  value: 16548, pnl: -2181, pnlPct:-11.64, div:  720, yield: 4.35, prevDiv:  720, divUrl:'https://finance.yahoo.co.jp/quote/5401.T' },
+  { code:'6349', name:'小森コーポレーション',sector:'機械',          type:'国内高配当',   qty: 10, price:1454,   value: 14540, pnl: -2630, pnlPct:-15.31, div:  750, yield: 5.16, prevDiv:  700, divUrl:'https://finance.yahoo.co.jp/quote/6349.T' },
 ];
 
 // ============================================================
@@ -530,15 +531,15 @@ function donut(id, labels, data, colors) {
 // Category donut
 donut('catChart',
   ['投資信託・ETF', '個別株式', 'ゴールド', '債券'],
-  [7452405, 1282657, 718876, 408186],
+  [7528499, 1294034, 710909, 411791],
   ['#3b82f6','#f59e0b','#eab308','#94a3b8']
 );
 
 // Investment type donut
 donut('typeChart',
-  ['米国インデックス','世界インデックス','国内高配当','ゴールド','米国高配当','米国債券','国内グロース株','新興国株','半導体'],
-  [4797642, 1786285, 1211817, 718876, 411094, 408186, 380888, 142472, 4864],
-  ['#3b82f6','#8b5cf6','#f59e0b','#fbbf24','#10b981','#94a3b8','#f97316','#06b6d4','#a855f7']
+  ['米国インデックス','世界インデックス','国内高配当','ゴールド','米国高配当','米国債券','国内グロース株','新興国株','半導体','米国グロース株'],
+  [4794638, 1785709, 1217056, 710909, 414040, 411791, 386461, 141914, 5348, 77367],
+  ['#3b82f6','#8b5cf6','#f59e0b','#fbbf24','#10b981','#94a3b8','#f97316','#06b6d4','#a855f7','#ec4899']
 );
 
 // Sector donut (individual stocks only)
